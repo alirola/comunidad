@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Incidencias{% endblock %}
+
+{% block content %}
+<h1>Incidencias</h1>
+<form method="post" action="{% url 'procesar_incidencias' %}">
+    {% csrf_token %}
+    <div class="accordion" id="incidenciasAccordion">
+        {% for incidencia in incidencias %}
+        <div class="card">
+            <div class="card-header" id="heading{{ incidencia.id }}">
+                <h2 class="mb-0">
+                    <input type="checkbox" name="incidencias" value="{{ incidencia.id }}" id="incidencia{{ incidencia.id }}" {% if incidencia.estado %}checked{% endif %}>
+                    <label for="incidencia{{ incidencia.id }}">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ incidencia.id }}" aria-expanded="true" aria-controls="collapse{{ incidencia.id }}">
+                            {{ incidencia.titulo }}
+                        </button>
+                    </label>
+                </h2>
+            </div>
+            <div id="collapse{{ incidencia.id }}" class="collapse" aria-labelledby="heading{{ incidencia.id }}" data-parent="#incidenciasAccordion">
+                <div class="card-body">
+                    <p>{{ incidencia.descripcion }}</p>
+                    <p><strong>Fecha de Creación:</strong> {{ incidencia.fecha_creacion }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Procesar Incidencias Seleccionadas</button>
+</form>
+{% endblock %}
