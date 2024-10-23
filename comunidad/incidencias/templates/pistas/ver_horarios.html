@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Horarios de la Pista de Pádel</h1>
+  <table>
+    <tr>
+      <th>Usuario</th>
+      <th>Fecha</th>
+      <th>Hora de Inicio</th>
+      <th>Hora de Fin</th>
+    </tr>
+    {% for reserva in reservas %}
+      <tr>
+        <td>{{ reserva.usuario.username }}</td>
+        <td>{{ reserva.fecha }}</td>
+        <td>{{ reserva.hora_inicio }}</td>
+        <td>{{ reserva.hora_fin }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="4">No hay reservas actualmente.</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

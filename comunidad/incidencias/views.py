@@ -8,6 +8,11 @@ from .decorators import group_required
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import ReservaPadel
+from .forms import ReservaPadelForm
+from django.contrib import messages
 
 def crear_incidencia(request):
     if not request.user.is_superuser and not request.user.groups.filter(name='conserje').exists():
@@ -81,3 +86,37 @@ def procesar_incidencias(request):
             incidencia.save()
         return redirect('lista_incidencias')
     return redirect('lista_incidencias')
+
+@login_required
+def ver_horarios(request):
+    reservas = ReservaPadel.objects.all().order_by('fecha', 'hora_inicio')
+    return render(request, 'pistas/ver_horarios.html', {'reservas': reservas})
+
+@login_required
+def reservar_pista(request):
+    if request.method == 'POST':
+        form = ReservaPadelForm(request.POST)
+        if form.is_valid():
+            # Verificar si ya existe una reserva en ese horario
+            fecha = form.cleaned_data['fecha']
+            hora_inicio = form.cleaned_data['hora_inicio']
+            hora_fin = form.cleaned_data['hora_fin']
+
+            conflicto = ReservaPadel.objects.filter(fecha=fecha, hora_inicio__lt=hora_fin, hora_fin__gt=hora_inicio).exists()
+
+            if conflicto:
+                messages.error(request, "Ya existe una reserva en este horario.")
+            else:
+                reserva = form.save(commit=False)
+                reserva.usuario = request.user
+                reserva.save()
+                messages.success(request, "Reserva realizada con éxito.")
+                return redirect('ver_horarios')
+    else:
+        form = ReservaPadelForm()
+
+    return render(request, 'pistas/reservar_pista.html', {'form': form})
+
+@login_required
+def pagina_principal(request):
+        return render(request, 'pagina_principal.html')

@@ -1,0 +1,9 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Página Principal</h1>
+  <ul>
+    <li><a href="{% url 'ver_incidencias' %}">Incidencias</a></li>
+    <li><a href="{% url 'ver_horarios' %}">Pista de Pádel</a></li>
+  </ul>
+{% endblock %}

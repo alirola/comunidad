@@ -25,8 +25,10 @@ urlpatterns = [
     path('accounts/login/', incidencias_views.login_view, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', incidencias_views.signup, name='signup'),
-    path('', incidencias_views.login_view, name='default_view'),
+    path('', incidencias_views.login_view, name='pagina_principal'),
     path('superuser_dashboard/', incidencias_views.superuser_dashboard, name='superuser_dashboard'),
     path('accounts/logout/', incidencias_views.logout, name='logout'),
     path('procesar_incidencias/', incidencias_views.procesar_incidencias, name='procesar_incidencias'),
+	path('horarios/', incidencias_views.ver_horarios, name='ver_horarios'),
+    path('reservar/', incidencias_views.reservar_pista, name='reservar_pista'),
 ]
